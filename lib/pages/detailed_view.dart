@@ -1,17 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:squid_game_flutter/models/player_model.dart';
 
-class DetailedView extends StatefulWidget {
 
+// Page logic and view are separated to different classes for easier code management
+class DetailedPage extends StatefulWidget {
+  /// Player details passed from general view
   final Player player;
 
-  const DetailedView({Key? key, required this.player}) : super(key: key);
+  const DetailedPage({Key? key, required this.player}) : super(key: key);
 
   @override
-  _DetailedViewState createState() => _DetailedViewState();
+  _DetailedPageController createState() => _DetailedPageController();
 }
 
-class _DetailedViewState extends State<DetailedView> {
+class _DetailedPageController extends State<DetailedPage> {
+  @override
+  Widget build(BuildContext context) {
+    return _DetailedPageView(state: this);
+  }
+
+
+  // Buttons logic
+  void _appBarBackButton() => Navigator.pop(context);
+
+  void _isEliminatedButton() {
+    setState(() {
+      widget.player.isEliminated = !widget.player.isEliminated;
+    });
+  }
+
+  bool _isPlayerEliminated() => widget.player.isEliminated;
+
+  bool _isPlayerWithPicture() => widget.player.pict != null;
+
+
+}
+
+class _DetailedPageView extends StatelessWidget {
+  final _DetailedPageController state;
+
+  const _DetailedPageView({Key? key, required this.state}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,9 +54,7 @@ class _DetailedViewState extends State<DetailedView> {
       title: const Text("Squid Game"),
       backgroundColor: Colors.redAccent,
       leading: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: state._appBarBackButton,
         child: const Icon(Icons.arrow_back),
       ),
     );
@@ -40,7 +67,7 @@ class _DetailedViewState extends State<DetailedView> {
         children: [
           const SizedBox(height: 20),
           Container(
-              foregroundDecoration: widget.player.isEliminated ? const BoxDecoration(
+              foregroundDecoration: state._isPlayerEliminated() ? const BoxDecoration(
                 color: Colors.grey,
                 backgroundBlendMode: BlendMode.saturation,
               ) : null,
@@ -50,35 +77,27 @@ class _DetailedViewState extends State<DetailedView> {
                   image: DecorationImage(
                       fit: BoxFit.fill,
                       image:
-                      widget.player.pict != null ? NetworkImage(widget.player.pict!) :
+                      state._isPlayerWithPicture() ? NetworkImage(state.widget.player.pict!) :
                       Image.asset("assets/placeholder.jpg").image
                   )
               )
           ),
           const SizedBox(height: 20),
-          Text(widget.player.name, style: const TextStyle(fontSize: 20),),
+          Text(state.widget.player.name, style: const TextStyle(fontSize: 20),),
           const SizedBox(height: 20),
-          Text(widget.player.description),
+          Text(state.widget.player.description),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text("Is Eliminated? "),
-              ElevatedButton(onPressed: () {
-                setState(() {
-                  widget.player.isEliminated = !widget.player.isEliminated;
-                });
-              }, child: Text(widget.player.isEliminated.toString())),
+              ElevatedButton(
+                  onPressed: state._isEliminatedButton,
+                  child: Text(state._isPlayerEliminated().toString())),
             ],
           ),
-
         ],
       ),
     );
   }
-
-  
-
-
-
 }
