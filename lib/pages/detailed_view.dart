@@ -101,3 +101,5 @@ class _DetailedPageView extends StatelessWidget {
     );
   }
 }
+
+

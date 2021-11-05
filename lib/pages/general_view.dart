@@ -1,15 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:squid_game_flutter/models/player_model.dart';
 import 'package:squid_game_flutter/pages/detailed_view.dart';
-import 'package:squid_game_flutter/pages/test_file.dart';
+import 'package:squid_game_flutter/pages/loading_view.dart';
+import 'package:squid_game_flutter/utils/json_from_file.dart';
 
-Future<List<dynamic>> readJson(String fileName) async {
-  final String response = await rootBundle.loadString('assets/$fileName.json');
-  return await json.decode(response);
-}
 
 class GeneralView extends StatefulWidget {
   const GeneralView({Key? key}) : super(key: key);
@@ -21,6 +15,7 @@ class GeneralView extends StatefulWidget {
 class _GeneralViewState extends State<GeneralView> {
 
   List<Player> playerList = List.empty(growable: true);
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -28,18 +23,24 @@ class _GeneralViewState extends State<GeneralView> {
     super.initState();
   }
 
-  void initStateAsync() async {
-    final jsonData = await readJson("players");
-    for (final player in jsonData) {
+  Future<void> initStateAsync() async {
+    await readJson("players").then((players) => fillPlayerList(players));
+  }
+
+  void fillPlayerList(dynamic players) {
+    for (final player in players) {
       playerList.add(Player.fromJson(player));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: isLoading ? const BuildLoadingScreen() : _buildBody(),
     );
   }
 
@@ -67,23 +68,20 @@ class _GeneralViewState extends State<GeneralView> {
 
   ListTile _buildPlayerCard(Player player) {
     return ListTile(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DetailedPage(player: player)
-            )).then((value) => setState(() {}));
-      },
-      title: Text(player.name, style: const TextStyle(fontSize: 20)),
       minVerticalPadding: 20,
       tileColor: Colors.red[200],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0)),
+      title: Text(
+          player.name,
+          style: const TextStyle(fontSize: 20)),
       leading: Container(
+        width: 50,
+        height: 50,
         foregroundDecoration: player.isEliminated ? const BoxDecoration(
           color: Colors.grey,
           backgroundBlendMode: BlendMode.saturation,
         ) : null,
-        width: 50,
-        height: 50,
         decoration: BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.fill,
@@ -92,6 +90,12 @@ class _GeneralViewState extends State<GeneralView> {
             )
         ),
       ),
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DetailedPage(player: player)
+            )).then((value) => setState(() {}));
+      },
     );
   }
 
