@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:squid_game_flutter/models/player_model.dart';
+import 'package:squid_game_flutter/generated/l10n.dart';
 
 
 // Page logic and view are separated to different classes for easier code management
@@ -33,6 +35,11 @@ class _DetailedPageController extends State<DetailedPage> {
 
   bool _isPlayerWithPicture() => widget.player.pict != null;
 
+  String _getIsEliminatedText() => S.of(context).isEliminated;
+  String _getNameText() => "${S.of(context).name}: ${widget.player.name}";
+  String _getDescriptionText() => "${S.of(context).description}: ${widget.player.description}";
+  String _getEliminateButtonText() => widget.player.isEliminated ? S.of(context).yes : S.of(context).no;
+
 
 }
 
@@ -43,6 +50,7 @@ class _DetailedPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String isEliminatedText = S.of(context).isEliminated;
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
@@ -83,17 +91,18 @@ class _DetailedPageView extends StatelessWidget {
               )
           ),
           const SizedBox(height: 20),
-          Text(state.widget.player.name, style: const TextStyle(fontSize: 20),),
+          Text(
+            state._getNameText(), style: const TextStyle(fontSize: 20),),
           const SizedBox(height: 20),
-          Text(state.widget.player.description),
+          Text(state._getDescriptionText()),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Is Eliminated? "),
+              Text(state._getIsEliminatedText()),
               ElevatedButton(
                   onPressed: state._isEliminatedButton,
-                  child: Text(state._isPlayerEliminated().toString())),
+                  child: Text(state._getEliminateButtonText())),
             ],
           ),
         ],

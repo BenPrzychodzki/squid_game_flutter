@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:squid_game_flutter/generated/l10n.dart';
 import 'package:squid_game_flutter/models/player_model.dart';
 import 'package:squid_game_flutter/pages/detailed_view.dart';
 import 'package:squid_game_flutter/pages/loading_view.dart';
@@ -46,7 +47,7 @@ class _GeneralViewState extends State<GeneralView> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text("Squid Game"),
+      title: Text(S.of(context).appBarText),
       backgroundColor: Colors.redAccent,
     );
   }
