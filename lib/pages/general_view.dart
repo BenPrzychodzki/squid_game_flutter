@@ -70,13 +70,17 @@ class _GeneralViewState extends State<GeneralView> {
         Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => DetailedView(player: player)
-            ));
+            )).then((value) => setState(() {}));
       },
       title: Text(player.name, style: const TextStyle(fontSize: 20)),
       minVerticalPadding: 20,
       tileColor: Colors.red[200],
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       leading: Container(
+        foregroundDecoration: player.isEliminated ? const BoxDecoration(
+          color: Colors.grey,
+          backgroundBlendMode: BlendMode.saturation,
+        ) : null,
         width: 50,
         height: 50,
         decoration: BoxDecoration(
