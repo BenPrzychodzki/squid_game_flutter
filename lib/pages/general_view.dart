@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:squid_game_flutter/models/player_model.dart';
+import 'package:squid_game_flutter/pages/detailed_view.dart';
 
 Future<List<dynamic>> readJson(String fileName) async {
   final String response = await rootBundle.loadString('assets/$fileName.json');
@@ -44,7 +45,6 @@ class _GeneralViewState extends State<GeneralView> {
   AppBar _buildAppBar() {
     return AppBar(
       title: const Text("Squid Game"),
-      elevation: 0.0,
       backgroundColor: Colors.redAccent,
     );
   }
@@ -67,7 +67,10 @@ class _GeneralViewState extends State<GeneralView> {
   ListTile _buildPlayerCard(Player player) {
     return ListTile(
       onTap: () {
-
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DetailedView(player: player)
+            ));
       },
       title: Text(player.name, style: const TextStyle(fontSize: 20)),
       minVerticalPadding: 20,

@@ -16,6 +16,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Squid Game",
       theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+                primary: Colors.redAccent,
+            elevation: 0.0)),
         appBarTheme: const AppBarTheme(
           elevation: 0.0,
           color: Colors.transparent,
